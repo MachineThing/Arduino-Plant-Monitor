@@ -1,11 +1,14 @@
 #include <DHTesp.h>
+#include <ESP8266WiFi.h>
+#include "ssid.h"
 
-const int moistureDet = D2;
+const int moistureDet = A0;
 const int humidityDet = D1;
 DHTesp dht;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(moistureDet, INPUT);
   dht.setup(humidityDet, DHTesp::DHT11);
 }
 
@@ -13,6 +16,10 @@ void loop() {
   int moisture = analogRead(moistureDet);
   float humidity = dht.getHumidity();
   float temperat = dht.getTemperature();
+  /*
+   * 560 maans that the plant needs water
+   * 580ish is probually good.
+   */
   if (not isnan(humidity)) { // So we don't get a wrong value during cooldown
     Serial.print("moisture: ");
     Serial.print(moisture);
