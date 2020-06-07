@@ -36,15 +36,6 @@ void setup() {
 void loop() {
   WiFiClient client = server.available(); // Listen for incoming clients
   
-  /*int moisture = analogRead(moistureDet);
-  float humidity = dht.getHumidity();
-  float temperat = dht.getTemperature();
-  while (not isnan(humidity)) {
-    moisture = analogRead(moistureDet);
-    humidity = dht.getHumidity();
-    temperat = dht.getTemperature();
-    delay(100);
-  }*/
   if (client) {
     
   Serial.println("New Client!");
@@ -64,14 +55,24 @@ void loop() {
           client.println("Connection: close");
           client.println();
 
+          int moisture = analogRead(moistureDet);
+          float humidity = dht.getHumidity(); // TODO: Make it so it doesn't return NaN
+          float temperat = dht.getTemperature();
+          
           client.println("<!DOCTYPE html>");
           client.println("<html>");
           client.println("<head>");
           client.println("<title>Plant monitor</title>");
           client.println("</head>");
           client.println("<body>");
-          client.println("<h1>Hello, world!</h1>");
-          client.println("</body>");
+          client.println("<h1>Plant monitor</h1>");
+          client.print("<p>Moisture: ");
+          client.println(moisture);
+          client.print("</p><p>Humidity: ");
+          client.println(humidity);
+          client.print("</p><p>Temperature: ");
+          client.println(temperat);
+          client.println("</p></body>");
           client.println("</html>");
 
           client.println();
