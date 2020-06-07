@@ -4,6 +4,9 @@ Arduino Board used: [NodeMCU](https://www.amazon.com/gp/product/B081CSJV2V/ref=p
 Website: TBA
 
 ## How to setup
+
+**Note: Your Wifi needs to be 2.4GHz for this to work as the NodeMCU does not support 5GHz!**
+
 You will need:
 - The [NodeMCU](https://www.amazon.com/gp/product/B081CSJV2V/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1) board
 - [DHT11 humidity and temperature measure](https://www.amazon.com/dp/B01DKC2GQ0?tag=duckduckgo-ffab-20&linkCode=osi&th=1&psc=1)

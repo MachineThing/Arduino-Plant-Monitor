@@ -10,6 +10,15 @@ void setup() {
   Serial.begin(9600);
   pinMode(moistureDet, INPUT);
   dht.setup(humidityDet, DHTesp::DHT11);
+  Serial.print("Connecting to WiFi");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("Connected!");
+  Serial.print("Your IP Address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void loop() {
