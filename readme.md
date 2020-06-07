@@ -15,7 +15,7 @@ You will need:
 2. Make a new file in the `plant` directory called `ssid.h` and put this in the file:
 ```
 extern const char* ssid="Your WiFi SSID";
-extern const char* ssid="Your WiFi password";
+extern const char* password="Your WiFi password";
 ```
 
 3. In the Arduino IDE preferences add `https://arduino.esp8266.com/stable/package_esp8266com_index.json` to `Additional Boards Manager URLs`.
