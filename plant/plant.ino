@@ -84,6 +84,8 @@ void loop() {
       header += c;
       if (c == '\n') { // if the byte is a newline character it probably means that the HTTP request is done.
         if (currentLine.length() == 0) {
+          int countdownTime = 60-floor((currentTime - aimTime)/1000); // To remove the decimal points at the end
+          
           client.println("HTTP/1.1 200 OK");
           client.println("Content-type:text/html");
           client.println("Connection: close");
@@ -103,7 +105,7 @@ void loop() {
           client.print("</p><p>Temperature: ");
           client.println(temperat * 1.8 + 32); // Fahrenheit temperature
           client.print("</p><p>Time: ");
-          client.println(floor((aimTime - (currentTime - aimTime))/1000)); // Fahrenheit temperature
+          client.println(countdownTime);
           client.println("</p></body>");
           client.println("</html>");
 
