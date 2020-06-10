@@ -1,3 +1,12 @@
+/*
+ * For my soil:
+ * 230 range means the plant is dry
+ * 290 range means the plant is damp
+ * 340 range means the plant is wet
+ * 
+ * Honestly that's confusing as it changes too slow for me, thast just the hygrometer if I'm correct through.
+ */
+
 #include <DHTesp.h>
 #include <ESP8266WiFi.h>
 #include "ssid.h"
@@ -71,7 +80,7 @@ void loop() {
           client.print("</p><p>Humidity: ");
           client.println(humidity);
           client.print("</p><p>Temperature: ");
-          client.println(temperat);
+          client.println(temperat * 1.8 + 32); // Fahrenheit temperature
           client.println("</p></body>");
           client.println("</html>");
 
