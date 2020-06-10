@@ -15,16 +15,20 @@ const int moistureDet = A0;
 const int humidityDet = D1;
 DHTesp dht;
 
+// Variable to store the HTTP request
+String header;
+// Plant status variables
+int moisture;
+float humidity;
+float temperat;
+// Time variables, they should be unsigned longs and WILL overflow after 50 days
+unsigned long aimTime;
 unsigned long currentTime = millis();
 unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 2000;
-
 // Set the web server port to the HTTP port
 WiFiServer server(80);
-
-// Variable to store the HTTP request
-String header;
 
 void setup() {
   Serial.begin(9600);
@@ -40,33 +44,50 @@ void setup() {
   Serial.print("Your IP Address: ");
   Serial.println(WiFi.localIP());
   server.begin();
+
+  moisture = analogRead(moistureDet);
+  humidity = dht.getHumidity();
+  temperat = dht.getTemperature();
+  aimTime = 0;
 }
 
 void loop() {
   WiFiClient client = server.available(); // Listen for incoming clients
+  currentTime = millis();
+
+  if (currentTime - aimTime > 60000) {
+    moisture = analogRead(moistureDet);
+    humidity = dht.getHumidity();
+    temperat = dht.getTemperature();
+    aimTime = currentTime;
+    while (isnan(humidity)) { // If the humidity value is NaN
+      moisture = analogRead(moistureDet);
+      humidity = dht.getHumidity();
+      temperat = dht.getTemperature();
+      aimTime = currentTime;
+      Serial.println("Humidity was NaN!");
+      delay(500); // So we don't keep getting NaN
+    }
+    Serial.println("Updated values!");
+  }
   
   if (client) {
     
   Serial.println("New Client!");
   String currentLine = "";
-  currentTime = millis();
-  previousTime = currentTime;
+  unsigned long previousTime = currentTime;
+  
   while (client.connected() && currentTime - previousTime <= timeoutTime) { // Loop while client is connected
-    currentTime = millis();
+    unsigned long currentTime = millis();
     if (client.available()) {
-      char c = client.read(); // Read a byte and then
-      Serial.write(c);
+      char c = client.read(); // Read a byte
       header += c;
-      if (c == '\n') { // if the byte is a newline character
+      if (c == '\n') { // if the byte is a newline character it probably means that the HTTP request is done.
         if (currentLine.length() == 0) {
           client.println("HTTP/1.1 200 OK");
           client.println("Content-type:text/html");
           client.println("Connection: close");
           client.println();
-
-          int moisture = analogRead(moistureDet);
-          float humidity = dht.getHumidity(); // TODO: Make it so it doesn't return NaN
-          float temperat = dht.getTemperature();
           
           client.println("<!DOCTYPE html>");
           client.println("<html>");
@@ -81,6 +102,8 @@ void loop() {
           client.println(humidity);
           client.print("</p><p>Temperature: ");
           client.println(temperat * 1.8 + 32); // Fahrenheit temperature
+          client.print("</p><p>Time: ");
+          client.println(floor((aimTime - (currentTime - aimTime))/1000)); // Fahrenheit temperature
           client.println("</p></body>");
           client.println("</html>");
 
